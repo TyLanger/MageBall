@@ -28,11 +28,18 @@ public class PlayerInput : NetworkBehaviour
 		}
 		if (Input.GetButtonDown("Fire1"))
 		{
+			// Fire1 default left mouse button
 			this.player.spellCast(0);
 		}
 		if (Input.GetButtonDown("Fire2"))
 		{
+			// Fire2 default right mouse button
 			this.player.spellCast(1);
+		}
+		if(Input.GetButtonDown("Fire3"))
+		{
+			// Fire3 default left shift
+			this.player.spellCast (2);
 		}
 	}
 

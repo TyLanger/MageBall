@@ -7,6 +7,7 @@ public class PlayerController : NetworkBehaviour {
     public float moveSpeed = 10.0f;
     public GameObject ballPrefab;
 	public GameObject ballSpawn;
+	Vector3 heightCorrectedPoint; 
 
 	//Spells
 	public Spell[] spells;
@@ -74,7 +75,7 @@ public class PlayerController : NetworkBehaviour {
 
     public void LookAt(Vector3 lookPoint)
     {
-        Vector3 heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
+		heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
         transform.LookAt(heightCorrectedPoint);
     }
 
@@ -103,9 +104,14 @@ public class PlayerController : NetworkBehaviour {
 	[Command]
 	void CmdSpellCast(int spellIndex)
 	{
-		var spell = (Spell)Instantiate (spells [spellIndex], ballSpawn.transform.position, ballSpawn.transform.rotation);
-		spell.GetComponent<Ball> ().castSpell ();
-		var spellGO = spell.gameObject;
+		Spell spellClone;
+		if (spells [spellIndex].GetComponent<TargetAoE> ()) {
+			spellClone = (Spell)Instantiate (spells [spellIndex], heightCorrectedPoint, ballSpawn.transform.rotation);
+		} else {
+			spellClone = (Spell)Instantiate (spells [spellIndex], ballSpawn.transform.position + spells [spellIndex].spawnOffest, ballSpawn.transform.rotation);
+		}
+		spellClone.GetComponent<Spell> ().castSpell ();
+		var spellGO = spellClone.gameObject;
 		NetworkServer.Spawn (spellGO);
 	}
 

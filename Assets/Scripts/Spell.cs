@@ -8,6 +8,8 @@ public class Spell : MonoBehaviour
 	public spellType type;
 	public spellType weaknessType;
 
+	public Vector3 spawnOffest;
+
 	private float cost;
 
 	private float cooldown;
