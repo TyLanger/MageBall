@@ -28,11 +28,11 @@ public class PlayerInput : NetworkBehaviour
 		}
 		if (Input.GetButtonDown("Fire1"))
 		{
-			this.player.fire();
+			this.player.spellCast(0);
 		}
 		if (Input.GetButtonDown("Fire2"))
 		{
-			this.player.testSpellCast();
+			this.player.spellCast(1);
 		}
 	}
 

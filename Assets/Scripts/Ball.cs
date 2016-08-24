@@ -55,6 +55,7 @@ public class Ball : Spell
 		{
 			this.endOfFlight = true;
 		}
+
 		if (!this.endOfFlight)
 		{
 			this.currentVelocity = this.initialVelocity + this.acceleration * this.timeAlive;
@@ -83,7 +84,8 @@ public class Ball : Spell
 	private void calculateVelocity()
 	{
 		
-		base.GetComponent<Rigidbody>().velocity = new Vector3(this.currentVelocity * Mathf.Sin(base.transform.eulerAngles.magnitude * Mathf.Deg2Rad), 0f, this.currentVelocity * Mathf.Cos(base.transform.eulerAngles.magnitude * Mathf.Deg2Rad));
+		base.GetComponent<Rigidbody>().velocity = 
+			new Vector3(this.currentVelocity * Mathf.Sin(base.transform.eulerAngles.magnitude * Mathf.Deg2Rad), 0f, this.currentVelocity * Mathf.Cos(base.transform.eulerAngles.magnitude * Mathf.Deg2Rad));
 	}
 
 	private void bounce()
@@ -157,10 +159,66 @@ public class Ball : Spell
 			return;
 		}
 		this.exploded = true;
+		// AreaEffect could have a different name
+		// should AreaEffect == 2 make the ball to size of 2 or multiply it by 2?
+		// setting it to 2 makes some sense, but when I made WaterBall, I thought it multiplied it by 2
 		base.transform.localScale = Vector3.one * this.AreaEffect;
 	}
 
-	private void OnTriggerEnter(Collider col)
+	void OnTriggerEnter(Collider col)
+	{
+		var health = col.gameObject.GetComponent<Health> ();
+		if (health != null) {
+			hitHealth (col.gameObject);
+		}
+		if (col.tag == "Wall") {
+			hitWall (col.gameObject);
+		} else if (col.tag == "Player") {
+			hitPlayer (col.gameObject);
+		} else if (col.tag == "Spell") {
+			hitSpell (col.gameObject);
+		}
+
+	}
+
+	public virtual void hitHealth(GameObject hit)
+	{
+		// The target that gets hit will only take the initial damage, not the explosion damage
+		// Targets will also take damage from walking in to the explosion, not just from being there when it explodes
+		if (exploded) {
+			hit.GetComponent<Health> ().TakeDamage (this.explosionDamage);
+		} else {
+			hit.GetComponent<Health> ().TakeDamage (this.damage);
+		}
+	}
+
+	public virtual void hitWall(GameObject hit)
+	{
+		if (numBounces > 0) {
+			bounce ();
+		} else if (explodesOnImpact) {
+			this.endOfFlight = true;
+			explode ();
+		} else {
+			this.endOfFlight = true;
+		}
+	}
+
+	public virtual void hitPlayer(GameObject hit)
+	{
+
+	}
+
+	public virtual void hitSpell(GameObject hit)
+	{
+		// if the spell I hit is weak to my type
+		if (hit.GetComponent<Spell> ().weaknessType == this.GetComponent<Spell> ().type) {
+			Destroy (hit);
+		}
+	}
+
+	/* old OnTriggerEnter
+	public virtual void OnTriggerEnter(Collider col)
 	{
 		GameObject gameObject = col.gameObject;
 		Health health = gameObject.GetComponent<Health>();
@@ -168,12 +226,15 @@ public class Ball : Spell
 			if (numBounces > 0) {
 				bounce ();
 			} else if (explodesOnImpact) {
+				this.endOfFlight = true;
 				explode ();
 			}
 		}
+		// this all needs to be refactored to not have so many loopholes
 		if (health != null)
 		{
 			this.endOfFlight = true;
+			// doesn't even check if it shoud explode
 			this.explode();
 			if (this.exploded)
 			{
@@ -186,4 +247,5 @@ public class Ball : Spell
 			UnityEngine.Object.Destroy(base.gameObject, 2f);
 		}
 	}
+	*/
 }

@@ -92,13 +92,18 @@ public class PlayerController : NetworkBehaviour {
 		var spellGO = spell.gameObject;
 		CmdSpellCast (spellGO);
 		*/
-		CmdSpellCast ();
+		//CmdSpellCast ();
+	}
+
+	public void spellCast(int spellIndex)
+	{
+		CmdSpellCast(spellIndex);
 	}
 
 	[Command]
-	void CmdSpellCast()
+	void CmdSpellCast(int spellIndex)
 	{
-		var spell = (Spell)Instantiate (spells [1], ballSpawn.transform.position, ballSpawn.transform.rotation);
+		var spell = (Spell)Instantiate (spells [spellIndex], ballSpawn.transform.position, ballSpawn.transform.rotation);
 		spell.GetComponent<Ball> ().castSpell ();
 		var spellGO = spell.gameObject;
 		NetworkServer.Spawn (spellGO);
