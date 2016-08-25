@@ -190,6 +190,7 @@ public class Ball : Spell
 		} else {
 			hit.GetComponent<Health> ().TakeDamage (this.damage);
 		}
+		endOfFlight = true;
 	}
 
 	public virtual void hitWall(GameObject hit)
