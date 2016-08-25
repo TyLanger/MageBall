@@ -215,6 +215,8 @@ public class Ball : Spell
 		// if the spell I hit is weak to my type
 		if (hit.GetComponent<Spell> ().weaknessType == this.GetComponent<Spell> ().type) {
 			Destroy (hit);
+		} else if (this.GetComponent<Spell> ().weaknessType == hit.GetComponent<Spell> ().type) {
+			Destroy (this.gameObject);
 		}
 	}
 
