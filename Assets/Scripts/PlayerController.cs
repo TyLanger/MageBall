@@ -14,10 +14,7 @@ public class PlayerController : NetworkBehaviour {
     
     Vector3 velocity;
 
-	// Player variables
-	public float maxHealth = 100f;
-	public float currentHealth;
-	//public GameObject healthBar;
+
 
     // Attack variables
     // int maxProjecties = 10; not implemented yet. Commenting it out to surpress warrnings for now
@@ -26,7 +23,6 @@ public class PlayerController : NetworkBehaviour {
 
     // Use this for initialization
     void Start () {
-		currentHealth = maxHealth;
 	}
 	
 	// Update is called once per frame
@@ -61,18 +57,6 @@ public class PlayerController : NetworkBehaviour {
 			//new Vector3 (xInput, 0, zInput) * moveSpeed;
 	}
 
-	public virtual void takeDamage(float damage)
-	{
-		currentHealth -= damage;
-		/* 
-		 * This doesn't quite work
-		 * This isn't how I want the healthbar anyway
-		 * so scrapping it for now
-		healthBar.transform.position = new Vector3 (transform.position.x, (transform.position.y - 1 + currentHealth/maxHealth + 0.5f * ((maxHealth - currentHealth)/maxHealth)), transform.position.z);
-		healthBar.transform.localScale = new Vector3 (1.1f, currentHealth / maxHealth, 1.1f);
-		*/
-	}
-
     public void LookAt(Vector3 lookPoint)
     {
 		heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
@@ -83,18 +67,6 @@ public class PlayerController : NetworkBehaviour {
     {
         GetComponent<MeshRenderer>().material.color = Color.blue;
     }
-
-
-	public void testSpellCast()
-	{
-		/*
-		var spell = (Spell)Instantiate (spells [1], ballSpawn.transform.position, ballSpawn.transform.rotation);
-		spell.GetComponent<Ball> ().castSpell ();
-		var spellGO = spell.gameObject;
-		CmdSpellCast (spellGO);
-		*/
-		//CmdSpellCast ();
-	}
 
 	public void spellCast(int spellIndex)
 	{

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
 public class CameraController : MonoBehaviour {
@@ -8,6 +9,9 @@ public class CameraController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		// camera is in the scene before the player is.
+		// this will never work.
+		// Either have the player call the camera to say it's in the scene or make a delegate/event
 		player = FindObjectOfType<PlayerController> ().gameObject;
 	}
 	
@@ -15,7 +19,8 @@ public class CameraController : MonoBehaviour {
 	void Update () {
 		if (player == null) {
 			player = FindObjectOfType<PlayerController> ().gameObject;
+		} else {
+			this.transform.position = player.transform.position + cameraOffset;
 		}
-		this.transform.position = player.transform.position + cameraOffset;
 	}
 }

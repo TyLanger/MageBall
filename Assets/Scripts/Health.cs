@@ -31,18 +31,22 @@ public class Health : NetworkBehaviour {
 		currentHealth -= amount;
 		if (currentHealth <= 0)
 		{
-			if (destroyOnDeath) {
-				Destroy (gameObject);
-			}
-			currentHealth = maxHealth;
-
-			// called on the Server, but invoked on the Clients
-			RpcRespawn ();
-
+			die ();
 		}
 
 		//healthBar.sizeDelta = new Vector2(currentHealth, healthBar.sizeDelta.y);
 		//OnChangeHealth(currentHealth);
+	}
+
+	void die ()
+	{
+		if (destroyOnDeath) {
+			Destroy (gameObject);
+		}
+		currentHealth = maxHealth;
+
+		// called on the Server, but invoked on the Clients
+		RpcRespawn ();
 	}
 
 	void OnChangeHealth (int health)
