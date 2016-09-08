@@ -11,6 +11,8 @@ public class Health : NetworkBehaviour {
 
 	Vector3 spawnLocation;
 
+	public event System.Action OnDeath;
+
 	[SyncVar(hook = "OnChangeHealth")]
 	public int currentHealth = maxHealth;
 	public RectTransform healthBar;
@@ -38,8 +40,12 @@ public class Health : NetworkBehaviour {
 		//OnChangeHealth(currentHealth);
 	}
 
-	void die ()
+	//[ContextMenu("Self Destruct")] not sure exactly how this works. Might need to be public virtual void
+	public void die ()
 	{
+		if (OnDeath != null) {
+			OnDeath ();
+		}
 		if (destroyOnDeath) {
 			Destroy (gameObject);
 		}

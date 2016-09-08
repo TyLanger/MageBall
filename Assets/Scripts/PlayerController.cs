@@ -14,7 +14,10 @@ public class PlayerController : NetworkBehaviour {
     
     Vector3 velocity;
 
+	TeamController teamController;
+	Team team;
 
+	CameraController myCamera;
 
     // Attack variables
     // int maxProjecties = 10; not implemented yet. Commenting it out to surpress warrnings for now
@@ -23,6 +26,11 @@ public class PlayerController : NetworkBehaviour {
 
     // Use this for initialization
     void Start () {
+		// when the player spawns, it finds the team controller and adds itself to a team
+		teamController = FindObjectOfType<TeamController> ();
+		team = teamController.addPlayerToGame (this.gameObject);
+		myCamera = FindObjectOfType<CameraController> ();
+		myCamera.addPlayer (this.gameObject);
 	}
 	
 	// Update is called once per frame
