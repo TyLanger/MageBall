@@ -90,7 +90,7 @@ public class PlayerController : NetworkBehaviour {
 		} else {
 			spellClone = (Spell)Instantiate (spells [spellIndex], ballSpawn.transform.position + spells [spellIndex].spawnOffest, ballSpawn.transform.rotation);
 		}
-		spellClone.GetComponent<Spell> ().castSpell ();
+		spellClone.GetComponent<Spell> ().castSpell (this.gameObject);
 		var spellGO = spellClone.gameObject;
 		NetworkServer.Spawn (spellGO);
 	}

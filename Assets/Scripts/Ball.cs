@@ -137,8 +137,9 @@ public class Ball : Spell
 
 	}
 
-	public override void castSpell()
+	public override void castSpell(GameObject player)
 	{
+		base.castSpell(player);
 		this.currentVelocity = this.initialVelocity;
 		this.calculateVelocity();
 	}

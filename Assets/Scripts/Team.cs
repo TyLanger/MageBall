@@ -36,6 +36,7 @@ public class Team : MonoBehaviour {
 	{
 		// when a team member dies.
 		if (OnTeamMemberDeath != null) {
+			Debug.Log ("OnMemberDeath");
 			OnTeamMemberDeath ();
 		}
 	}

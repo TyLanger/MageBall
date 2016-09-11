@@ -40,6 +40,7 @@ public class TeamController : MonoBehaviour {
 
 	void teamDied()
 	{
+		Debug.Log ("Player from a team died");
 		// when a member on one team dies, add points to the other team?
 	}
 		

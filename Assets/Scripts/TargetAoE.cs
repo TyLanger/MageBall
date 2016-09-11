@@ -26,8 +26,10 @@ public class TargetAoE : Spell {
 		GetComponent<Rigidbody> ().velocity = new Vector3 (0f, -height / armTime, 0f);
 	}
 
-	public override void castSpell()
+	public override void castSpell(GameObject player)
 	{
+		base.castSpell(player);
+
 		transform.position += new Vector3 (0, height, 0);
 	}
 
