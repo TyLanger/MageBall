@@ -6,7 +6,7 @@ public class CameraController : MonoBehaviour {
 
 	public GameObject player;
 	public Vector3 cameraOffset;
-	bool hasPlayer;
+	public bool hasPlayer;
 
 	// Use this for initialization
 	void Start () {
@@ -19,7 +19,10 @@ public class CameraController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+
+
 		if (hasPlayer) {
+			//this.transform.rotation = Quaternion.Euler(new Vector3(60, -player.transform.rotation.y, 0));
 			this.transform.position = player.transform.position + cameraOffset;
 		}
 	}

@@ -17,7 +17,6 @@ public class PlayerController : NetworkBehaviour {
 	TeamController teamController;
 	Team team;
 
-	CameraController myCamera;
 
     // Attack variables
     // int maxProjecties = 10; not implemented yet. Commenting it out to surpress warrnings for now
@@ -29,17 +28,21 @@ public class PlayerController : NetworkBehaviour {
 		// when the player spawns, it finds the team controller and adds itself to a team
 		teamController = FindObjectOfType<TeamController> ();
 		team = teamController.addPlayerToGame (this.gameObject);
-		myCamera = FindObjectOfType<CameraController> ();
-		myCamera.addPlayer (this.gameObject);
+		//myCamera = FindObjectOfType<CameraController> ();
+		//myCamera.addPlayer (this.gameObject);
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        if (!isLocalPlayer)
-        {
-            return;
-        }
+		if (!isLocalPlayer) {
+			//Debug.Log ("PlayerController quit.");
+			return;
+		} else {
+			// This makes the camera work for multiple people
+			Camera.main.GetComponent<CameraController> ().addPlayer (this.gameObject);
+		}
 
         
     }
@@ -53,7 +56,7 @@ public class PlayerController : NetworkBehaviour {
 		// Other methods move the player in relation to their orientation
 		transform.position = Vector3.MoveTowards(transform.position, transform.position + velocity, moveSpeed);
 		//GetComponent<Rigidbody>().transform.Translate(velocity);
-
+		//camClone.transform.position = this.transform.position + cameraOffset.position;
     }
 
 	public void move(float xInput, float zInput)
