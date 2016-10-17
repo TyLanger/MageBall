@@ -166,23 +166,8 @@ public class Ball : Spell
 		base.transform.localScale = Vector3.one * this.AreaEffect;
 	}
 
-	void OnTriggerEnter(Collider col)
-	{
-		var health = col.gameObject.GetComponent<Health> ();
-		if (health != null) {
-			hitHealth (col.gameObject);
-		}
-		if (col.tag == "Wall") {
-			hitWall (col.gameObject);
-		} else if (col.tag == "Player") {
-			hitPlayer (col.gameObject);
-		} else if (col.tag == "Spell") {
-			hitSpell (col.gameObject);
-		}
 
-	}
-
-	public virtual void hitHealth(GameObject hit)
+	public override void hitHealth(GameObject hit)
 	{
 		// The target that gets hit will only take the initial damage, not the explosion damage
 		// Targets will also take damage from walking in to the explosion, not just from being there when it explodes
@@ -194,7 +179,7 @@ public class Ball : Spell
 		endOfFlight = true;
 	}
 
-	public virtual void hitWall(GameObject hit)
+	public override void hitWall(GameObject hit)
 	{
 		if (numBounces > 0) {
 			bounce ();
@@ -206,12 +191,9 @@ public class Ball : Spell
 		}
 	}
 
-	public virtual void hitPlayer(GameObject hit)
-	{
 
-	}
 
-	public virtual void hitSpell(GameObject hit)
+	public override void hitSpell(GameObject hit)
 	{
 		// if the spell I hit is weak to my type
 		if (hit.GetComponent<Spell> ().weaknessType == this.GetComponent<Spell> ().type) {
