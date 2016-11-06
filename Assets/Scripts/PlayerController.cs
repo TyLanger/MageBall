@@ -98,7 +98,7 @@ public class PlayerController : NetworkBehaviour {
 		NetworkServer.Spawn (spellGO);
 	}
 
-
+	/* Old version of spell casting
 	public void fire()
 	{
 		if (Time.time > nextFire)
@@ -108,7 +108,7 @@ public class PlayerController : NetworkBehaviour {
 			/*
             instanceBall = (GameObject)Instantiate(ball, transform.position, transform.rotation);
             instanceBall.GetComponent<BallController>().moveBall();
-            */
+
 		}
 	}
 
@@ -125,4 +125,5 @@ public class PlayerController : NetworkBehaviour {
 		NetworkServer.Spawn (ball);
 
 	}
+	*/
 }
