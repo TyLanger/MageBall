@@ -44,7 +44,11 @@ public class BallController : MonoBehaviour {
 		var health = hit.GetComponent<Health>();
 		if (health  != null)
 		{
-			health.TakeDamage(10);
+			// Add the new spell to make this script compile
+			// This is the old version
+			// Nothing should be using this script
+			// Bandaid fix until I decide this can be deleted
+			health.TakeDamage(10, new Spell());
 		}		
 		Destroy (gameObject);
 	}

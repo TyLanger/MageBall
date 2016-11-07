@@ -33,6 +33,7 @@ public class TargetAoE : Spell {
 		transform.position += new Vector3 (0, height, 0);
 	}
 
+	/* Now uses the base version of the spell
 	void OnTriggerEnter(Collider col)
 	{
 		var health = col.gameObject.GetComponent<Health> ();
@@ -40,4 +41,5 @@ public class TargetAoE : Spell {
 			health.TakeDamage (damage);
 		}
 	}
+	*/
 }

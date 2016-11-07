@@ -167,14 +167,14 @@ public class Ball : Spell
 	}
 
 
-	public override void hitHealth(GameObject hit)
+	public override void hitHealth(GameObject hit, Spell thisSpell)
 	{
 		// The target that gets hit will only take the initial damage, not the explosion damage
 		// Targets will also take damage from walking in to the explosion, not just from being there when it explodes
 		if (exploded) {
-			hit.GetComponent<Health> ().TakeDamage (this.explosionDamage);
+			hit.GetComponent<Health> ().TakeDamage (this.explosionDamage, thisSpell);
 		} else {
-			hit.GetComponent<Health> ().TakeDamage (this.damage);
+			hit.GetComponent<Health> ().TakeDamage (this.damage, thisSpell);
 		}
 		endOfFlight = true;
 	}

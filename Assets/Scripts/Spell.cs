@@ -26,6 +26,11 @@ public class Spell : MonoBehaviour
 		this.caster = player;
 	}
 
+	public GameObject getCaster()
+	{
+		return this.caster;	
+	}
+
 	public virtual void castSpell(GameObject player)
 	{
 		setCaster (player);
@@ -53,7 +58,7 @@ public class Spell : MonoBehaviour
 
 	}
 
-	public virtual void hitHealth(GameObject hit)
+	public virtual void hitHealth(GameObject hit, Spell thisSpell)
 	{
 
 	}
@@ -78,7 +83,7 @@ public class Spell : MonoBehaviour
 			hitSpell (col.gameObject);
 		}
 		if (health != null) {
-			hitHealth (col.gameObject);
+			hitHealth (col.gameObject, this);
 		}
 	}
 

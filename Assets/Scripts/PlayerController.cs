@@ -59,6 +59,11 @@ public class PlayerController : NetworkBehaviour {
 		//camClone.transform.position = this.transform.position + cameraOffset.position;
     }
 
+	public Team getTeam()
+	{
+		return team;
+	}
+
 	public void move(float xInput, float zInput)
 	{
 

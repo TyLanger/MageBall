@@ -22,7 +22,7 @@ public class Health : NetworkBehaviour {
 		spawnLocation = transform.position;
 	}
 
-	public void TakeDamage(int amount)
+	public void TakeDamage(int amount, Spell spell)
 	{
 		if (!isServer)
 		{
@@ -33,6 +33,8 @@ public class Health : NetworkBehaviour {
 		currentHealth -= amount;
 		if (currentHealth <= 0)
 		{
+			// When something dies, if it has a PlayerController, it gives the casting team a point
+			spell.getCaster ().GetComponent<PlayerController>().getTeam().changeScore(1);
 			die ();
 		}
 

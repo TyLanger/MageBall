@@ -5,10 +5,10 @@ public class Team : MonoBehaviour {
 
 	public string teamName;
 	Color teamColour;
-	GameObject[] members;
+	public GameObject[] members;
 	int numCurrentMembers = 0;
 	int maxTeamSize = 5;
-	int score;
+	public int score;
 	public Transform spawnLocation;
 
 	public event System.Action OnTeamMemberDeath;
@@ -30,6 +30,11 @@ public class Team : MonoBehaviour {
 			numCurrentMembers++;
 			player.GetComponent<Health> ().OnDeath += OnMemberDeath;
 		}
+	}
+
+	public void changeScore(int points)
+	{
+		score += points;
 	}
 
 	void OnMemberDeath()
