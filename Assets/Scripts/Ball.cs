@@ -31,7 +31,7 @@ public class Ball : Spell
 
 	public float AreaEffect;
 
-	private bool exploded;
+	protected bool exploded;
 
 	private SphereCollider sCol;
 	Rigidbody rbody;

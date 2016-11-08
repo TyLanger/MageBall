@@ -1,10 +1,13 @@
 using System;
+using UnityEngine.Networking;
 using UnityEngine;
 
-public class Spell : MonoBehaviour
+public class Spell : NetworkBehaviour
 {
 	public string spellName;
-	GameObject caster;
+
+	[SyncVar]
+	public GameObject caster;
 
 	public enum spellType {Fire, Water, Air, Earth, None};
 	public spellType type;
@@ -68,12 +71,12 @@ public class Spell : MonoBehaviour
 		// Ignore the collision if it hits itself.
 		// I don't know if this is how I want it forever.
 		if (col.gameObject == this.caster) {
+			//Debug.Log ("Same");
 			return;
-		} else {
-			Debug.Log (col.gameObject + " " + this.caster);
-		}
+		} 
+
 		var health = col.gameObject.GetComponent<Health> ();
-		bool friendly;
+
 
 		if (col.tag == "Wall") {
 			hitWall (col.gameObject);

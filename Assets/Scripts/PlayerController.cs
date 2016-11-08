@@ -14,6 +14,12 @@ public class PlayerController : NetworkBehaviour {
     
     Vector3 velocity;
 
+	// These 2 should be put in a new class or struct maybe?
+	public enum statusEffect {Free, Bubbled, Rooted};
+	public statusEffect moveStatus;
+	float statusTimeLeft;
+	public Transform bubble;
+
 	TeamController teamController;
 	Team team;
 
@@ -41,6 +47,7 @@ public class PlayerController : NetworkBehaviour {
 			return;
 		} else {
 			// This makes the camera work for multiple people
+			// should this be in update or start?
 			Camera.main.GetComponent<CameraController> ().addPlayer (this.gameObject);
 		}
 
@@ -54,10 +61,28 @@ public class PlayerController : NetworkBehaviour {
 
 		// move towards works regardless of player rotation.
 		// Other methods move the player in relation to their orientation
-		transform.position = Vector3.MoveTowards(transform.position, transform.position + velocity, moveSpeed);
+		if (moveStatus == statusEffect.Free) {
+			transform.position = Vector3.MoveTowards (transform.position, transform.position + velocity, moveSpeed);
+		} else if (moveStatus == statusEffect.Bubbled) {
+			transform.position = bubble.transform.position;
+		}
+
+		if (statusTimeLeft > 0) {
+			statusTimeLeft -= Time.deltaTime;
+		} else if (moveStatus != statusEffect.Free) {
+			moveStatus = statusEffect.Free;
+		}
+
 		//GetComponent<Rigidbody>().transform.Translate(velocity);
 		//camClone.transform.position = this.transform.position + cameraOffset.position;
     }
+
+	public void bubbled(Transform bubbler, float bubbleTime)
+	{
+		moveStatus = statusEffect.Bubbled;
+		bubble = bubbler;
+		statusTimeLeft = bubbleTime;
+	}
 
 	public Team getTeam()
 	{
@@ -86,11 +111,11 @@ public class PlayerController : NetworkBehaviour {
 
 	public void spellCast(int spellIndex)
 	{
-		CmdSpellCast(spellIndex);
+		CmdSpellCast(spellIndex, this.gameObject);
 	}
 
 	[Command]
-	void CmdSpellCast(int spellIndex)
+	void CmdSpellCast(int spellIndex, GameObject caster)
 	{
 		Spell spellClone;
 		if (spells [spellIndex].GetComponent<TargetAoE> ()) {
@@ -98,7 +123,12 @@ public class PlayerController : NetworkBehaviour {
 		} else {
 			spellClone = (Spell)Instantiate (spells [spellIndex], ballSpawn.transform.position + spells [spellIndex].spawnOffest, ballSpawn.transform.rotation);
 		}
-		spellClone.GetComponent<Spell> ().castSpell (this.gameObject);
+		// This debug is only run on the server
+		// This means that if the extra window is the server, it doesn't show up in the editor
+		// Debug.Log ("this.gameObject: "+this.gameObject);
+		// Need to pass in parameters
+		// Just because this function is inside this script, doesn't mean it can access them?
+		spellClone.GetComponent<Spell> ().castSpell (caster);
 		var spellGO = spellClone.gameObject;
 		NetworkServer.Spawn (spellGO);
 	}
