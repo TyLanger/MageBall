@@ -31,7 +31,7 @@ public class TeamController : MonoBehaviour {
 			teams [numPlayers % numStartingTeams].addPlayerToTeam (player);
 			teams [numPlayers % numStartingTeams].OnTeamMemberDeath += teamDied;
 			numPlayers++;
-			return teams [numPlayers - 1];
+			return teams [(numPlayers - 1) % numStartingTeams];
 		} else {
 			return null;
 		}

@@ -29,26 +29,33 @@ public class PlayerController : NetworkBehaviour {
     public float fireRate;
     float nextFire = 0;
 
-    // Use this for initialization
     void Start () {
 		// when the player spawns, it finds the team controller and adds itself to a team
 		teamController = FindObjectOfType<TeamController> ();
 		team = teamController.addPlayerToGame (this.gameObject);
-		//myCamera = FindObjectOfType<CameraController> ();
-		//myCamera.addPlayer (this.gameObject);
+
 
 	}
+
+	public override void OnStartLocalPlayer()
+	{
+		// Used to set the player to be blue here.
+		// Add something else to differentiate the player
+		// Maybe health bar is bigger?
+
+
+		// This makes the camera work for multiple people
+		// Had this originally in Update
+		// Seems to work just as well in start. If something goes wrong, move it back?
+		// Makes most sense to have it here.
+		Camera.main.GetComponent<CameraController> ().addPlayer (this.gameObject);
+	}
 	
-	// Update is called once per frame
 	void Update () {
 
 		if (!isLocalPlayer) {
 			//Debug.Log ("PlayerController quit.");
 			return;
-		} else {
-			// This makes the camera work for multiple people
-			// should this be in update or start?
-			Camera.main.GetComponent<CameraController> ().addPlayer (this.gameObject);
 		}
 
         
@@ -102,11 +109,6 @@ public class PlayerController : NetworkBehaviour {
     {
 		heightCorrectedPoint = new Vector3(lookPoint.x, transform.position.y, lookPoint.z);
         transform.LookAt(heightCorrectedPoint);
-    }
-
-    public override void OnStartLocalPlayer()
-    {
-        GetComponent<MeshRenderer>().material.color = Color.blue;
     }
 
 	public void spellCast(int spellIndex)

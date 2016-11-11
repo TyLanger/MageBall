@@ -4,7 +4,7 @@ using System.Collections;
 public class Team : MonoBehaviour {
 
 	public string teamName;
-	Color teamColour;
+	public Color teamColour;
 	public GameObject[] members;
 	int numCurrentMembers = 0;
 	int maxTeamSize = 5;
@@ -29,6 +29,7 @@ public class Team : MonoBehaviour {
 			members [numCurrentMembers] = player;
 			numCurrentMembers++;
 			player.GetComponent<Health> ().OnDeath += OnMemberDeath;
+			player.GetComponent<MeshRenderer>().material.color = teamColour;
 		}
 	}
 

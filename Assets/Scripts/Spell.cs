@@ -76,16 +76,26 @@ public class Spell : NetworkBehaviour
 		} 
 
 		var health = col.gameObject.GetComponent<Health> ();
+		bool friendly = false;
 
+		// check to see if the thing hit has a player controller
+		if (col.gameObject.GetComponent<PlayerController> () != null) {
+			// if a spell hits a target with the same team, set friendly to true
+			if (col.gameObject.GetComponent<PlayerController> ().getTeam () == this.caster.GetComponent<PlayerController> ().getTeam ()) {
+				friendly = true;
+			}
+		}
 
 		if (col.tag == "Wall") {
 			hitWall (col.gameObject);
-		} else if (col.tag == "Player") {
+		} else if (col.tag == "Player" && !friendly) {
+			// if they have a player tag and are not friendly(i.e. different team), do the player effect
 			hitPlayer (col.gameObject);
 		} else if (col.tag == "Spell") {
 			hitSpell (col.gameObject);
 		}
-		if (health != null) {
+		if (health != null && !friendly) {
+			// if they have a health component and are not friendly, do damage
 			hitHealth (col.gameObject, this);
 		}
 	}
