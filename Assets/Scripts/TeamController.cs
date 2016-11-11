@@ -16,7 +16,7 @@ public class TeamController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		players = new GameObject[maxNumPlayers];
-		//teams = new Team[maxNumberTeams];
+		teams = new Team[maxNumberTeams];
 	}
 	
 	// Update is called once per frame
