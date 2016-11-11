@@ -33,6 +33,11 @@ public class TargetAoE : Spell {
 		transform.position += new Vector3 (0, height, 0);
 	}
 
+	public override void hitHealth(GameObject hit, Spell thisSpell)
+	{
+		hit.GetComponent<Health> ().TakeDamage (this.damage, thisSpell);
+	}
+
 	/* Now uses the base version of the spell
 	void OnTriggerEnter(Collider col)
 	{
