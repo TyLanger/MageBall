@@ -28,6 +28,12 @@ public class WaterBall : Ball {
 
 	public override void hitPlayer(GameObject hit)
 	{
+		// once it hits a target, it gets to finish the bubble
+		// will stop the bubble from breaking too early
+		// and from continuing after carrying one player
+		// whooooops timeAlive counts up to flight duration
+		// should be this.flightDuration = timeAlive + bubbleTime
+		this.flightDuration = this.getTimeAlive() + bubbleTime;
 		hit.GetComponent<PlayerController> ().bubbled(this.transform, bubbleTime);
 		//hit.transform.position = this.transform.position;
 	}

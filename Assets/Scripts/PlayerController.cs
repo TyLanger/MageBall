@@ -17,7 +17,7 @@ public class PlayerController : NetworkBehaviour {
 	// These 2 should be put in a new class or struct maybe?
 	public enum statusEffect {Free, Bubbled, Rooted};
 	public statusEffect moveStatus;
-	float statusTimeLeft;
+	public float statusTimeLeft;
 	public Transform bubble;
 
 	TeamController teamController;
@@ -75,6 +75,7 @@ public class PlayerController : NetworkBehaviour {
 		}
 
 		if (statusTimeLeft > 0) {
+			Debug.Log ("StatusTimeLeft: " + statusTimeLeft + " Time.deltaTime: " + Time.deltaTime);
 			statusTimeLeft -= Time.deltaTime;
 		} else if (moveStatus != statusEffect.Free) {
 			moveStatus = statusEffect.Free;

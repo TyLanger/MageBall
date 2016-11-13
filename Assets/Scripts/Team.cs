@@ -36,6 +36,7 @@ public class Team : MonoBehaviour {
 	public void changeScore(int points)
 	{
 		score += points;
+		FindObjectOfType<GUIcontroller> ().updateScores ();
 	}
 
 	void OnMemberDeath()

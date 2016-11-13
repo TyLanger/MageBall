@@ -203,6 +203,11 @@ public class Ball : Spell
 		}
 	}
 
+	public float getTimeAlive()
+	{
+		return timeAlive;
+	}
+
 	/* old OnTriggerEnter
 	public virtual void OnTriggerEnter(Collider col)
 	{
