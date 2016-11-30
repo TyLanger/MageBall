@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class TeamController : MonoBehaviour {
+public class TeamController : NetworkBehaviour {
 
 	[SerializeField]
 	GameObject[] players;
@@ -11,6 +12,8 @@ public class TeamController : MonoBehaviour {
 	int numStartingTeams = 2;
 	// this leaves room if I want to make more than just 2 teams.
 	int maxNumberTeams = 4;
+
+
 	public Team[] teams;
 
 	// Use this for initialization

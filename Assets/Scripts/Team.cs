@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class Team : MonoBehaviour {
+public class Team : NetworkBehaviour {
 
 	public string teamName;
 	public Color teamColour;
 	public GameObject[] members;
 	int numCurrentMembers = 0;
 	int maxTeamSize = 5;
+
+	[SyncVar(hook="updateScore")]
 	public int score;
 	public Transform spawnLocation;
 
@@ -35,8 +38,15 @@ public class Team : MonoBehaviour {
 
 	public void changeScore(int points)
 	{
+		Debug.Log ("changeScore");
 		score += points;
-		FindObjectOfType<GUIcontroller> ().updateScores ();
+	}
+
+	public void updateScore(int newScore)
+	{
+		Debug.Log ("Update Scores in Team: " + teamName + " " + score + " " + newScore);
+		score = newScore;
+		FindObjectOfType<GUIcontroller> ().updateScores (this, newScore);
 	}
 
 	void OnMemberDeath()

@@ -5,7 +5,7 @@ using System.Collections;
 
 public class Health : NetworkBehaviour {
 
-	public const int maxHealth = 100;
+	public const int maxHealth = 150;
 
 	public bool destroyOnDeath;
 
