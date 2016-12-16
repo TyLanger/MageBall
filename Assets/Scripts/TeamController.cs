@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 public class TeamController : NetworkBehaviour {
 
 	[SerializeField]
-	GameObject[] players;
+	public GameObject[] players;
 	int numPlayers = 0;
 	int maxNumPlayers = 10;
 

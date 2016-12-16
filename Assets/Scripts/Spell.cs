@@ -2,6 +2,7 @@ using System;
 using UnityEngine.Networking;
 using UnityEngine;
 
+
 public class Spell : NetworkBehaviour
 {
 	public string spellName;

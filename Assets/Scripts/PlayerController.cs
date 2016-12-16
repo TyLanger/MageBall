@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerController : NetworkBehaviour {
 
@@ -23,6 +24,14 @@ public class PlayerController : NetworkBehaviour {
 	TeamController teamController;
 	Team team;
 
+	public Text chatBox;
+
+	[SyncVar(hook = "sendToChat")]
+	public string message;
+	public Text messageBox;
+
+	//for testing tilt
+	public Text tiltText;
 
     // Attack variables
     // int maxProjecties = 10; not implemented yet. Commenting it out to surpress warrnings for now
@@ -134,6 +143,37 @@ public class PlayerController : NetworkBehaviour {
 		spellClone.GetComponent<Spell> ().castSpell (caster);
 		var spellGO = spellClone.gameObject;
 		NetworkServer.Spawn (spellGO);
+	}
+
+	public void sendMessage(Text t)
+	{
+		PlayerController player = FindObjectOfType<PlayerController> ();
+		message = player.team.teamName;
+		message += ": " + t.text;
+		Debug.Log (message);
+		if (isLocalPlayer) {
+			sendToChat (message);
+		}
+	}
+
+	public void sendToChat(string m)
+	{
+		Debug.Log ("sendToChat");
+		FindObjectOfType<GUIcontroller> ().addMessage (m);
+	}
+
+	public void updateChat(string newM)
+	{
+		chatBox.text += newM;
+	}
+
+	// This method shouldn't be here
+	public void displayTilt(float accelX, float accelY, float accelZ, float moveX, float moveY)
+	{
+		// "F1" makes it only display one decimal place
+		// Format lets me use {0}
+		string t = string.Format("Acceleration: {0}, {1}, {2} \nMovement: {3}, {4}", accelX.ToString("F1"), accelY.ToString("F1"), accelZ.ToString("F1"), moveX.ToString("F1"), moveY.ToString("F1"));
+		FindObjectOfType<GUIcontroller> ().updateTilt (t);
 	}
 
 	/* Old version of spell casting

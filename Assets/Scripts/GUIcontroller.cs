@@ -11,6 +11,18 @@ public class GUIcontroller : NetworkBehaviour {
 	public Canvas canvas;
 	public Font defaultFont;
 
+	public Text message;
+
+	public Text tiltText;
+
+	//[SyncVar (hook = "updateChat")]
+	public string messageStr;
+
+	public Text chatroom;
+
+	//[SyncVar(hook="drawChat")]
+	public string chatStr;
+
 	public Text newText;
 	GameObject newGO;
 
@@ -43,6 +55,49 @@ public class GUIcontroller : NetworkBehaviour {
 		*/
 	}
 
+	/*
+	void Update()
+	{
+		chatroom.text = chatStr;
+	}
+	*/
+
+	public void addMessage(string m)
+	{
+		messageStr = m + "\n";
+		chatroom.text += messageStr;
+	}
+
+	public void endChat()
+	{
+		
+		Debug.Log ("endChat");
+		messageStr = message.text + "\n";
+		message.text = "";
+
+		foreach (GameObject p in teamController.players) {
+			p.GetComponent<PlayerController> ().updateChat (messageStr);
+		}
+
+		// kinda works
+		//chatStr += messageStr;
+		//updateChat (messageStr);
+		//Debug.Log ("Mess STr: " + messageStr);
+		//chatroom.text += message.text + "\n";
+	}
+
+	public void updateChat(string newMessage)
+	{
+		Debug.Log ("updateChat");
+		chatStr += newMessage;
+		chatroom.text = chatStr;
+	}
+
+	public void drawChat(string chat)
+	{
+		chatroom.text = chat;
+	}
+
 	public void updateScores(Team t, int newScore)
 	{
 		//scores.text = "Green team: " + teams [0].score + " Yellow team: " + teams [1].score;
@@ -63,6 +118,11 @@ public class GUIcontroller : NetworkBehaviour {
 				scores.fontSize = 40;
 			}
 		}
+	}
+
+	public void updateTilt(string tiltMessage)
+	{
+		tiltText.text = tiltMessage;
 	}
 
 }
