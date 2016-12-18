@@ -35,9 +35,16 @@ public class Ball : Spell
 
 	private SphereCollider sCol;
 	Rigidbody rbody;
+	Transform trans;
 
-	public float raySpacing = 0.5f;
+	public float raySpacing = 0.1f;
+	[SerializeField]
+	Vector2[] rayOffsets;
+	float nextRayCheck = 0;
+	public float timeBetweenChecks = 1;
 
+	Vector3 lastNormal = Vector3.one;
+	Vector3 bounceVector;
 
 
 	private void Start()
@@ -45,7 +52,8 @@ public class Ball : Spell
 		this.timeAlive = 0f;
 		this.sCol = base.GetComponent<SphereCollider>();
 		rbody = GetComponent<Rigidbody> ();
-
+		trans = this.transform;
+		initializeRays ();
 	}
 
 	private void FixedUpdate()
@@ -64,6 +72,10 @@ public class Ball : Spell
 		{
 			this.spellEnd();
 			this.currentVelocity = 0f;
+		}
+		if ((numBounces > 0) && (Time.time > nextRayCheck)) {
+			nextRayCheck = Time.time + timeBetweenChecks;
+			checkForObjects ();
 		}
 		this.calculateVelocity();
 		/*
@@ -95,14 +107,19 @@ public class Ball : Spell
 			//Ray ray;
 			RaycastHit hit;
 
-			float theta = Mathf.PI / (2 *sCol.radius /raySpacing);
+			// 1.0f used to be 2 *sCol.radius
+			// sCol.radius was 0.5
+			// might not have had anything to do with it, might have jsut been a coincidence
+			float theta = Mathf.PI / (1.0f /raySpacing);
 			float shortest = 10f;
 			Vector3 normal = Vector3.one;
 			float xPos;
 			float yPos;
 			Vector3 rayOrigin;
 
-			for (int i = 1; i <= (int)(2 * sCol.radius / raySpacing); i++)
+			// 2 * sCol.radius
+			// iterate through every ray
+			for (int i = 1; i <= (int)(1.0f / raySpacing); i++)
 			{
 				/*
 				float num = this.sCol.radius - this.raySpacing * (float)i;
@@ -111,8 +128,11 @@ public class Ball : Spell
 				Debug.DrawRay(base.transform.position + new Vector3(num, 0f, z), Vector3.forward, Color.red);
 				*/
 
-				xPos = sCol.radius * Mathf.Cos (theta * i - transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
-				yPos = sCol.radius * Mathf.Sin (theta * i - transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
+				// 0.5f used to be sCol.radius
+				// sCol.radius was 0.5
+				// I think I want 0.5 here, it just happened that sCol.radius was also 0.5 so it worked
+				xPos = trans.localScale.x * 0.5f * Mathf.Cos (theta * i - transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
+				yPos = trans.localScale.z * 0.5f * Mathf.Sin (theta * i - transform.rotation.eulerAngles.y * Mathf.Deg2Rad);
 
 				rayOrigin = transform.position + new Vector3 (xPos, 0, yPos);
 				//Debug.Log (rayOrigin);
@@ -132,13 +152,102 @@ public class Ball : Spell
 
 			crossResult = rbody.velocity.normalized - (2 * Vector3.Dot (rbody.velocity.normalized, normal) / (normal.magnitude * normal.magnitude)) * normal;
 			//Vector3 newDir = Vector3.RotateTowards (rbody.velocity.normalized, crossResult, Mathf.PI, 0);
+			Debug.Log("crossResult: " + crossResult);
 			transform.rotation = Quaternion.LookRotation (crossResult);
+			if (transform.rotation.x > 0 || true) {
+				Debug.Log (string.Format("X rotation: {0} crossResult: {1} hit.normal: {2} velocity: {3}", transform.rotation.x, crossResult, normal, rbody.velocity.normalized));
+			}
+			numBounces--;
+		}
+	}
+
+	void bounceWithPrecalculatedVector()
+	{
+		if (bounceVector != null) {
+			transform.rotation = Quaternion.LookRotation (bounceVector);
+			numBounces--;
+			lastNormal = Vector3.one;
+		}
+	}
+
+	void calculateBounceVector(Vector3 hitNormal)
+	{
+		// don't compute if the normal is the same as last time
+		// when you bounce, need to reset this lastNormal on the chance that you hit something with the same normal
+		if (hitNormal != lastNormal) 
+		{
+			lastNormal = hitNormal;
+			bounceVector = rbody.velocity.normalized - (2 * Vector3.Dot (rbody.velocity.normalized, hitNormal) / (hitNormal.magnitude * hitNormal.magnitude)) * hitNormal;
+		}
+	}
+
+	void checkForObjects()
+	{
+		RaycastHit hit;
+		float distance = 10;
+		Vector3 shortestNormal = Vector3.one;
+		// go through every ray stored
+		// might change to only do one per update or something
+		for(int i=0; i<rayOffsets.Length; i++)
+		{
+			// use the current position of the ball and the offsets for the rays to find the ray's position
+			Vector3 rayOrigin = trans.position + new Vector3 (rayOffsets[i].x, 0, rayOffsets[i].y);
+
+			// draw the ray
+			Debug.DrawRay (rayOrigin, rbody.velocity.normalized, Color.red);
+			// shoot ray
+			if (Physics.Raycast (rayOrigin, rbody.velocity.normalized, out hit, 10, LayerMask.GetMask("Walls"))) 
+			{
+				// if it hits something, save distance
+				// find the smallest distance
+				if (hit.distance < distance) 
+				{
+					distance = hit.distance;
+					shortestNormal = hit.normal;
+				}
+			}
 		}
 
+		if (distance < 0.2f) 
+		{
+			// if distance is very small, bounce the ball
+			bounceWithPrecalculatedVector();
+		} 
+		else if (distance < 2) 
+		{
+			// calculate the bounce vector ahead of time.
+			calculateBounceVector(shortestNormal);
+			// cut the time between checks in half
+			timeBetweenChecks /= 2;
+		}
+	}
+
+	void initializeRays()
+	{
+
+		float floatNumRays = (trans.localScale.x / raySpacing);
+		int numberOfRays = (int)floatNumRays;
+		rayOffsets = new Vector2[numberOfRays];
+
+		// scale / spacing = number of rays
+		// theta is the part between each ray.
+		// Want number of rays - 1 spaces
+		// for 5 rays, there are 4 spaces between
+		float theta = Mathf.PI / ((trans.localScale.x / raySpacing) -1);
+		float xPos, yPos;
+
+		for (int i = 0; i < numberOfRays; i++) 
+		{
+			xPos = trans.localScale.x * 0.5f * Mathf.Cos (theta * i - trans.rotation.eulerAngles.y * Mathf.Deg2Rad);
+			yPos = trans.localScale.z * 0.5f * Mathf.Sin (theta * i - trans.rotation.eulerAngles.y * Mathf.Deg2Rad);
+
+			rayOffsets [i] = new Vector2 (xPos, yPos);
+		}
 	}
 
 	public override void castSpell(GameObject player)
 	{
+		// use base spell to do mana costs, etc.
 		base.castSpell(player);
 		this.currentVelocity = this.initialVelocity;
 		this.calculateVelocity();
@@ -182,7 +291,9 @@ public class Ball : Spell
 	public override void hitWall(GameObject hit)
 	{
 		if (numBounces > 0) {
-			bounce ();
+			// this will fail if vector hasn't been precalculated
+			// like if a wall appears in between updates
+			bounceWithPrecalculatedVector ();
 		} else if (explodesOnImpact) {
 			this.endOfFlight = true;
 			explode ();

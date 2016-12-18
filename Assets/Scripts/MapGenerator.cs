@@ -58,7 +58,7 @@ public class MapGenerator : MonoBehaviour {
 		for (int i = 0; i < numDivisions; i++) {
 			float x = (boxSize/2 + a) * Mathf.Cos(theta*i*Mathf.Deg2Rad);
 			float z = (boxSize/2 + a) * Mathf.Sin(theta*i*Mathf.Deg2Rad);
-			Instantiate(wall, new Vector3(x, 0, z), Quaternion.Euler( Vector3.up * theta *i *-1));
+			Instantiate(wall, new Vector3(x, 0.5f, z), Quaternion.Euler( Vector3.up * theta *i *-1));
 		}
 
 		//floor = new Plane (Vector3.up, circleRad);
