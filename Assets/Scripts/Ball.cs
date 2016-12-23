@@ -207,18 +207,20 @@ public class Ball : Spell
 				}
 			}
 		}
-
+		/*
 		if (distance < 0.2f) 
 		{
 			// if distance is very small, bounce the ball
+			// already does this when it collides
 			bounceWithPrecalculatedVector();
-		} 
-		else if (distance < 2) 
+		} */
+		if (distance < 10) 
 		{
 			// calculate the bounce vector ahead of time.
 			calculateBounceVector(shortestNormal);
 			// cut the time between checks in half
-			timeBetweenChecks /= 2;
+			// is this necessary?
+			// timeBetweenChecks /= 2;
 		}
 	}
 
