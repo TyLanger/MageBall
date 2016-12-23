@@ -12,6 +12,8 @@ public class MapGenerator : MonoBehaviour {
 	public GameObject wall;
 	public GameObject floor;
 
+	public Transform wallParent;
+
 	// Use this for initialization
 	void Start () {
 		//makeSquareRoom ();
@@ -58,7 +60,11 @@ public class MapGenerator : MonoBehaviour {
 		for (int i = 0; i < numDivisions; i++) {
 			float x = (boxSize/2 + a) * Mathf.Cos(theta*i*Mathf.Deg2Rad);
 			float z = (boxSize/2 + a) * Mathf.Sin(theta*i*Mathf.Deg2Rad);
-			Instantiate(wall, new Vector3(x, 0.5f, z), Quaternion.Euler( Vector3.up * theta *i *-1));
+			// use the transform of the wall to set its parent
+			GameObject w = Instantiate(wall, new Vector3(x, 0.5f, z), Quaternion.Euler( Vector3.up * theta *i *-1)) as GameObject;
+			// use this if more objects get created with this class that need to be organized
+			//w.parent = wallParent;
+			w.transform.parent = this.transform;
 		}
 
 		//floor = new Plane (Vector3.up, circleRad);
