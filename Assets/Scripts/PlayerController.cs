@@ -12,6 +12,10 @@ public class PlayerController : NetworkBehaviour {
 
 	//Spells
 	public Spell[] spells;
+	// an array the same size as spells
+	// holds the time when you can next cast that spell
+	// i.e. the Time.time when you cast it last + the cooldown
+	public float[] timesOfNextCast;
     
     Vector3 velocity;
 
@@ -42,7 +46,7 @@ public class PlayerController : NetworkBehaviour {
 		// when the player spawns, it finds the team controller and adds itself to a team
 		teamController = FindObjectOfType<TeamController> ();
 		team = teamController.addPlayerToGame (this.gameObject);
-
+		timesOfNextCast = new float[spells.Length];
 
 	}
 
@@ -123,8 +127,13 @@ public class PlayerController : NetworkBehaviour {
 
 	public void spellCast(int spellIndex)
 	{
-		if (spells [spellIndex].canCast ()) {
+		// check if this spell can be cast
+		if (timesOfNextCast [spellIndex] < Time.time) {
 			CmdSpellCast (spellIndex, this.gameObject);
+			// update the next time this spell can be cast
+			timesOfNextCast [spellIndex] = Time.time + spells [spellIndex].cooldown;
+		} else {
+			//Debug.Log (Time.time + " " + timesOfNextCast [spellIndex]);
 		}
 	}
 
