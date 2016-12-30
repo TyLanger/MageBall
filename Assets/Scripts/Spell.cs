@@ -18,12 +18,23 @@ public class Spell : NetworkBehaviour
 
 	private float cost;
 
-	private float cooldown;
+	public float cooldown;
+	// if this is preivate, it starts as some random number
+	// setting it to public, then setting it to 0 in the prefab seems to work
+	// this variable is accessed before the object is created
+	// maybe it gets changed from the last time it was ran
+	// yep, leftover from last time it ran
+	public float timeOfNextCast = 0.0f;
 
 	// Maybe put these in a child of Spell
 	// RecastableSpell ?
 	// public bool recastable;
 	// private float recastTime;
+
+	private void Awake()
+	{
+		timeOfNextCast = 0.0f;
+	}
 
 	public void setCaster(GameObject player)
 	{
@@ -35,14 +46,27 @@ public class Spell : NetworkBehaviour
 		return this.caster;	
 	}
 
+	public bool canCast()
+	{
+		if (Time.time > timeOfNextCast) {
+			Debug.Log ("Changing timeOfNextCast. old: " + timeOfNextCast);
+			timeOfNextCast = Time.time + cooldown;
+			Debug.Log ("new: " + timeOfNextCast);
+			return true;
+		} else {
+			Debug.Log (Time.time + " " + timeOfNextCast);
+			return false;
+		}
+	}
+
 	public virtual void castSpell(GameObject player)
 	{
+		
+
 		setCaster (player);
 		/*
 		if (cost < PlayerInput.mana) {
-			if (timeSinceLastCast > cooldown) {
-
-			}
+			
 		}
 		*/
 	}

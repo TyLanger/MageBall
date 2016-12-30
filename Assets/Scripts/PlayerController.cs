@@ -123,7 +123,9 @@ public class PlayerController : NetworkBehaviour {
 
 	public void spellCast(int spellIndex)
 	{
-		CmdSpellCast(spellIndex, this.gameObject);
+		if (spells [spellIndex].canCast ()) {
+			CmdSpellCast (spellIndex, this.gameObject);
+		}
 	}
 
 	[Command]
