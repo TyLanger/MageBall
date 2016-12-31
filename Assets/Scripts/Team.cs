@@ -32,7 +32,10 @@ public class Team : NetworkBehaviour {
 			members [numCurrentMembers] = player;
 			numCurrentMembers++;
 			player.GetComponent<Health> ().OnDeath += OnMemberDeath;
-			player.GetComponent<MeshRenderer>().material.color = teamColour;
+			//player.GetComponent<MeshRenderer>().material.color = teamColour;
+			//player.GetComponentInChildren<MeshRenderer>().material.color = teamColour;
+			player.GetComponent<PlayerController> ().changeHeadColour (teamColour);
+
 		}
 	}
 

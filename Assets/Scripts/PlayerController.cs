@@ -29,6 +29,7 @@ public class PlayerController : NetworkBehaviour {
 	Team team;
 
 	public Text chatBox;
+	public GameObject headMesh;
 
 	[SyncVar(hook = "sendToChat")]
 	public string message;
@@ -47,7 +48,6 @@ public class PlayerController : NetworkBehaviour {
 		teamController = FindObjectOfType<TeamController> ();
 		team = teamController.addPlayerToGame (this.gameObject);
 		timesOfNextCast = new float[spells.Length];
-
 	}
 
 	public override void OnStartLocalPlayer()
@@ -132,8 +132,6 @@ public class PlayerController : NetworkBehaviour {
 			CmdSpellCast (spellIndex, this.gameObject);
 			// update the next time this spell can be cast
 			timesOfNextCast [spellIndex] = Time.time + spells [spellIndex].cooldown;
-		} else {
-			//Debug.Log (Time.time + " " + timesOfNextCast [spellIndex]);
 		}
 	}
 
@@ -185,6 +183,11 @@ public class PlayerController : NetworkBehaviour {
 		// Format lets me use {0}
 		string t = string.Format("Acceleration: {0}, {1}, {2} \nMovement: {3}, {4}", accelX.ToString("F1"), accelY.ToString("F1"), accelZ.ToString("F1"), moveX.ToString("F1"), moveY.ToString("F1"));
 		FindObjectOfType<GUIcontroller> ().updateTilt (t);
+	}
+
+	public void changeHeadColour(Color c)
+	{
+		headMesh.GetComponent<MeshRenderer>().material.color = c;
 	}
 
 	/* Old version of spell casting
