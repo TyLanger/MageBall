@@ -43,11 +43,14 @@ public class PlayerController : NetworkBehaviour {
     public float fireRate;
     float nextFire = 0;
 
+	public Animator staffAnim;
+
     void Start () {
 		// when the player spawns, it finds the team controller and adds itself to a team
 		teamController = FindObjectOfType<TeamController> ();
 		team = teamController.addPlayerToGame (this.gameObject);
 		timesOfNextCast = new float[spells.Length];
+		//anim = GetComponent<Animator> ();
 	}
 
 	public override void OnStartLocalPlayer()
@@ -132,7 +135,14 @@ public class PlayerController : NetworkBehaviour {
 			CmdSpellCast (spellIndex, this.gameObject);
 			// update the next time this spell can be cast
 			timesOfNextCast [spellIndex] = Time.time + spells [spellIndex].cooldown;
+			staffAnim.SetBool ("CastSpell", true);
 		}
+		Invoke ("stopCast", 0.1f);
+	}
+
+	void stopCast()
+	{
+		staffAnim.SetBool ("CastSpell", false);
 	}
 
 	[Command]
