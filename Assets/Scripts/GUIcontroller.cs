@@ -110,7 +110,7 @@ public class GUIcontroller : NetworkBehaviour {
 			if (name == t.teamName) {
 				score = newScore;
 			}
-			Debug.Log (name + ": " + score + " ");
+			//Debug.Log (name + ": " + score + " ");
 			scores.text += name + ": " + score + " ";
 			if (score > 4) {
 				scores.text = name + " wins!";

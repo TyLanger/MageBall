@@ -23,10 +23,13 @@ public class PlayerInput : NetworkBehaviour
 	public float maxTiltY = -0.05f;
 	public float restTiltY = -0.4f;
 
+	LineRenderer lineRenderer;
+
 	private void Start()
 	{
 		player = GetComponent<PlayerController>();
 
+		lineRenderer = GetComponent<LineRenderer> ();
 
 		// this appears to work
 		Keyframe[] ks = new Keyframe[5];
@@ -95,6 +98,12 @@ public class PlayerInput : NetworkBehaviour
 		{
 			Vector3 point = ray.GetPoint(distance);
 			this.player.LookAt(point);
+			// using this point makes the line go to the mouse
+			// disappears for a little while after casting a spell
+			// when the line is of the same material as the spell
+			// seems to work fine if it is a different material....
+			lineRenderer.SetPosition(0, this.transform.position);
+			lineRenderer.SetPosition(1, point);
 		}
 		if (Input.GetButtonDown("Fire1") )
 		{
@@ -111,6 +120,7 @@ public class PlayerInput : NetworkBehaviour
 			// Fire3 default left shift
 			this.player.spellCast (2);
 		}
+
 	}
 
 	float inputCurve(float input)

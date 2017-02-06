@@ -41,13 +41,13 @@ public class Team : NetworkBehaviour {
 
 	public void changeScore(int points)
 	{
-		Debug.Log ("changeScore");
+		//Debug.Log ("changeScore");
 		score += points;
 	}
 
 	public void updateScore(int newScore)
 	{
-		Debug.Log ("Update Scores in Team: " + teamName + " " + score + " " + newScore);
+		//Debug.Log ("Update Scores in Team: " + teamName + " " + score + " " + newScore);
 		score = newScore;
 		FindObjectOfType<GUIcontroller> ().updateScores (this, newScore);
 	}
