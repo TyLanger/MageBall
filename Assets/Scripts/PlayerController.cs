@@ -41,7 +41,8 @@ public class PlayerController : NetworkBehaviour {
     void Start () {
 		// when the player spawns, it finds the team controller and adds itself to a team
 		teamController = FindObjectOfType<TeamController> ();
-		team = teamController.addPlayerToGame (this.gameObject);
+		if(teamController != null)
+			team = teamController.addPlayerToGame (this.gameObject);
 
 
 	}
