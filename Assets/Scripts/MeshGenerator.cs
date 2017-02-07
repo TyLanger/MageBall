@@ -113,9 +113,17 @@ public class MeshGenerator : MonoBehaviour {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 
+				// curve the mesh on itself
+				// first line is to map z to y
+				// y is 0 to height
+				// want z to be from 0 to height to 0 over the same domain
 				float z = 2 *y - (height-1);
+				// change z so it isn't so linear
+				// this makes it look like a curve
+				// the 10 is just a scaling factor
+				z = ((width-1)*(width-1) - z*z)/10f;
 
-				newVerts[vertIndex] = new Vector3(mesh.vertices[vertIndex].x, mesh.vertices [vertIndex].y + (float)y*y/height, ((width-1)*(width-1) - z*z)/10f);
+				newVerts[vertIndex] = new Vector3(mesh.vertices[vertIndex].x, mesh.vertices [vertIndex].y + (float)y*y/height, z);
 
 				vertIndex++;
 			}
@@ -123,6 +131,7 @@ public class MeshGenerator : MonoBehaviour {
 
 		mesh.vertices = newVerts;
 		mesh.RecalculateNormals ();
+		// need to call these to update the mesh
 		meshFilter.sharedMesh = mesh;
 		meshCollider.sharedMesh = mesh;
 
