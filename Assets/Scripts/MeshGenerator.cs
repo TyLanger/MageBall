@@ -9,20 +9,27 @@ public class MeshGenerator : MonoBehaviour {
 	public MeshCollider meshCollider;
 	Mesh mesh;
 
-	int width = 10;
-	int height = 10;
+	int width = 100;
+	int height = 100;
 
+	/// <summary>
+	/// Makes the verts.
+	/// 
+	/// </summary>
+	/// <returns>The verts.</returns>
+	/// <param name="_width">Width.</param>
+	/// <param name="_height">Height. is the 2D height of the map</param>
+	/// <param name="scale">Scale.</param>
 	public Vector3[] makeVerts(int _width, int _height, float scale)
 	{
 		Vector3[] verts = new Vector3[_width * _height];
 		int vertIndex = 0;
-		// put some kind of noise here
-		// Mathf.PerlinNoise(x, y)
+
 		for (int x = 0; x < _width; x++) {
 			for (int y = 0; y < _height; y++) {
 				float perlinNoise = Mathf.PerlinNoise (x/scale, y/scale);
-				//Debug.Log (perlinNoise);
-				verts [vertIndex] = new Vector3(x, perlinNoise * 1 , y);
+
+				verts [vertIndex] = new Vector3(x, perlinNoise, y);
 				vertIndex++;
 			}
 		}
@@ -46,12 +53,12 @@ public class MeshGenerator : MonoBehaviour {
 		Texture2D texture = new Texture2D (width, height);
 		Color[] colourMap = new Color[width * height];
 
-		verts = makeVerts (width, height, 0.225f);
+		verts = makeVerts (width, height, 10);
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				float depth = verts[vertexIndex].y;
-				//verts [vertexIndex] = new Vector3 (x, depth, y);
+
 				uvs [vertexIndex] = new Vector2 (y / (float)height, x / (float)width);
 
 				/*
@@ -67,7 +74,7 @@ public class MeshGenerator : MonoBehaviour {
 					colourMap [vertexIndex] = Color.red;
 				}*/
 
-				colourMap [vertexIndex] = Color.Lerp (Color.gray, Color.green, depth/1f);
+				colourMap [vertexIndex] = Color.Lerp (Color.gray, Color.green, depth);
 
 				if (x < (width - 1) && y < (height - 1)) {
 					triangles [triangleIndex] = vertexIndex;
@@ -83,9 +90,6 @@ public class MeshGenerator : MonoBehaviour {
 				vertexIndex++;
 			}
 		}
-
-		//colourMap [0] = Color.yellow;
-		//colourMap [1] = Color.cyan;
 
 		mesh.vertices = verts;
 		mesh.triangles = triangles;
@@ -139,8 +143,9 @@ public class MeshGenerator : MonoBehaviour {
 
 	public void Start()
 	{
+		Random.InitState (1);
 		makeMesh ();
-		warpMesh ();
+		//warpMesh ();
 		//meshRenderer.sharedMaterial
 	}
 }
