@@ -6,16 +6,36 @@ public class MeshGenerator : MonoBehaviour {
 
 	public MeshFilter meshFilter;
 	public MeshRenderer meshRenderer;
+	public MeshCollider meshCollider;
+	Mesh mesh;
 
 	int width = 10;
 	int height = 10;
 
+	public Vector3[] makeVerts(int _width, int _height, float scale)
+	{
+		Vector3[] verts = new Vector3[_width * _height];
+		int vertIndex = 0;
+		// put some kind of noise here
+		// Mathf.PerlinNoise(x, y)
+		for (int x = 0; x < _width; x++) {
+			for (int y = 0; y < _height; y++) {
+				float perlinNoise = Mathf.PerlinNoise (x/scale, y/scale);
+				//Debug.Log (perlinNoise);
+				verts [vertIndex] = new Vector3(x, perlinNoise * 1 , y);
+				vertIndex++;
+			}
+		}
+
+		return verts;
+	}
 
 
+	/// Makes the mesh.
 	public void makeMesh()
 	{
 		// mesh
-		Mesh mesh = new Mesh ();
+		mesh = new Mesh ();
 		Vector3[] verts = new Vector3[width * height];
 		int[] triangles = new int[(width - 1) * (height - 1) * 6];
 		int triangleIndex = 0;
@@ -26,12 +46,15 @@ public class MeshGenerator : MonoBehaviour {
 		Texture2D texture = new Texture2D (width, height);
 		Color[] colourMap = new Color[width * height];
 
+		verts = makeVerts (width, height, 0.225f);
+
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				float depth = (float)Random.Range (0, 10) / 10f;
-				verts [vertexIndex] = new Vector3 (x, depth, y);
+				float depth = verts[vertexIndex].y;
+				//verts [vertexIndex] = new Vector3 (x, depth, y);
 				uvs [vertexIndex] = new Vector2 (y / (float)height, x / (float)width);
 
+				/*
 				if (depth < 0.2) {
 					colourMap [vertexIndex] = Color.black;
 				} else if (depth < 0.4) {
@@ -42,7 +65,9 @@ public class MeshGenerator : MonoBehaviour {
 					colourMap [vertexIndex] = Color.green;
 				} else {
 					colourMap [vertexIndex] = Color.red;
-				}
+				}*/
+
+				colourMap [vertexIndex] = Color.Lerp (Color.gray, Color.green, depth/1f);
 
 				if (x < (width - 1) && y < (height - 1)) {
 					triangles [triangleIndex] = vertexIndex;
@@ -75,13 +100,38 @@ public class MeshGenerator : MonoBehaviour {
 		meshFilter.sharedMesh = mesh;
 		meshRenderer.sharedMaterial.mainTexture = texture;
 
+		meshCollider.sharedMesh = mesh;
 
+
+	}
+
+	public void warpMesh()
+	{
+		int vertIndex = 0;
+		Vector3[] newVerts = new Vector3[width * height];
+
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+
+				float z = 2 *y - (height-1);
+
+				newVerts[vertIndex] = new Vector3(mesh.vertices[vertIndex].x, mesh.vertices [vertIndex].y + (float)y*y/height, ((width-1)*(width-1) - z*z)/10f);
+
+				vertIndex++;
+			}
+		}
+
+		mesh.vertices = newVerts;
+		mesh.RecalculateNormals ();
+		meshFilter.sharedMesh = mesh;
+		meshCollider.sharedMesh = mesh;
 
 	}
 
 	public void Start()
 	{
 		makeMesh ();
+		warpMesh ();
 		//meshRenderer.sharedMaterial
 	}
 }
